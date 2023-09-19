@@ -12,6 +12,6 @@ jobs:
       - uses: ./
         with:
           github-token: "${{ secrets.REPO_TOKEN }}"
-          org-owner: "${{ variables.ORG_OWNER }}"
+          org-owner: "${{ vars.ORG_OWNER }}"
           repo-name: "${{ github.event.issue.title }}"
           contract-owner-acc: "${{ github.event.issue.user.name }}"
