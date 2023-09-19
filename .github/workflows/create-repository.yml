@@ -14,4 +14,4 @@ jobs:
           github-token: "${{ secrets.REPO_TOKEN }}"
           org-owner: "${{ vars.ORG_OWNER }}"
           repo-name: "${{ github.event.issue.title }}"
-          contract-owner-acc: "${{ github.event.issue.user.name }}"
+          contract-owner-acc: "${{ github.event.issue.sender }}"
