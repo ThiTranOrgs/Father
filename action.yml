@@ -1,0 +1,14 @@
+name: "Action on issue open"
+description: "create reposository on issue open event"
+inputs:
+  github-token:
+    description: "Token"
+    required: true
+  repo-name:
+    description: "Name for new repository"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: echo CALL ACTION.YML ${{ inputs.repo-name }}
+      shell: bash
