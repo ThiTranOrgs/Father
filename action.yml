@@ -10,11 +10,11 @@ inputs:
   org-owner:
     description: "Account name of organization owner"
     required: true
-  contract-owner-id:
+  contract-owner-acc:
     description: "Account id of contract owner"
     required: true
 runs:
   using: "composite"
   steps:
-    - run: $GITHUB_ACTION_PATH/create-repository.sh ${{ inputs.github-token }} ${{ inputs.repo-name }} ${{ inputs.contract-owner-id }} ${{ inputs.org-owner }}
+    - run: $GITHUB_ACTION_PATH/create-repository.sh ${{ inputs.github-token }} ${{ inputs.repo-name }} ${{ inputs.contract-owner-acc }} ${{ inputs.org-owner }}
       shell: bash
