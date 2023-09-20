@@ -31,7 +31,7 @@ curl -L \
 	-H "Authorization: Bearer $TOKEN" \
 	-H "X-GitHub-Api-Version: 2022-11-28" \
 	https://api.github.com/orgs/$ORG_OWNER/invitations \
-	-d "{\"invitee_id\":\"$CONTRACT_OWNER\",\"role\":\"direct_member\"}"
+	-d "{\"invitee_id\":$CONTRACT_OWNER,\"role\":\"direct_member\"}"
 
 RETURN_CODE=$?
 if [ $RETURN_CODE -ne 0 ]; then
