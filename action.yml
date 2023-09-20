@@ -11,9 +11,9 @@ inputs:
     description: "Account name of organization owner"
     required: true
   contract-owner-id:
-    description: "Account name of contract owner"
+    description: "Account id of contract owner"
     required: true
-  runs:
+runs:
   using: "composite"
   steps:
     - run: $GITHUB_ACTION_PATH/create-repository.sh ${{ inputs.github-token }} ${{ inputs.repo-name }} ${{ inputs.contract-owner-id }} ${{ inputs.org-owner }}
