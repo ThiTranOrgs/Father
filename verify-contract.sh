@@ -59,7 +59,7 @@ else
 
 	# To compile specific contracts, the cosmwasm/rust-optimizer* image must be used instead of cosmwasm/workspace-optimizer* image
 	if [[ "$IMAGE" != *"rust-optimizer"* ]]; then
-		echo "Must use cosmwasm/rust-optimizer* image when compile specific contract"
+		echo "Must use cosmwasm/rust-optimizer* image when compile specific contract. Got $IMAGE"
 		exit 1
 	fi
 
