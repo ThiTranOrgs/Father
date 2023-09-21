@@ -22,10 +22,7 @@ runs:
     - name: Verify contract binary checksum against blockchain
       if: inputs.type == 'closed'
       run: |
-        curl -L https://github.com/ShareRing/Shareledger/releases/download/v2.0.1/shareledger --output shareledger
-        chmod 755 shareledger
-        sudo mv shareledger /usr/bin/shareledger
-        which shareledger
+        $GITHUB_ACTION_PATH/prepare.sh ${{ inputs.org-owner }} ${{ inputs.repo-name }}
         $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.org-owner }}
       shell: bash
     - name: Create new repository and invite collaborators

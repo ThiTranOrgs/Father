@@ -119,3 +119,6 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 else
 	exit 1
 fi
+
+# Cleanup
+rm -rf CONTRACT_DIR="$ROOT_DIR/src/$CONTRACT_NAME"
