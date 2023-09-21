@@ -1,4 +1,4 @@
-name: "On Issue Opened"
+name: "On Issue Opened/CLosed"
 on:
   issues:
     types: [opened, closed]
