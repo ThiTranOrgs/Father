@@ -85,7 +85,7 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 	echo "Verify checksum successfully, create release tag ..."
 	# Query repository with name
 	FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME)
-	FULL_REPO_NAME=${FULL_REPO_NAME//\"/}
+	# FULL_REPO_NAME=${FULL_REPO_NAME//\"/}
 
 	GET_LATEST_COMMIT_HASH_CMD="curl -L -s \
   -H \"Accept: application/vnd.github.sha\" \
