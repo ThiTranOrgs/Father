@@ -10,7 +10,7 @@ chmod 755 shareledger
 sudo mv shareledger /usr/bin/shareledger
 which shareledger
 
-apt update
-apt install -y git
+sudo apt-get update
+sudo apt-get install -y git
 
 git clone $REPO_LINK $REPO_DIR
