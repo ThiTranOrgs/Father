@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TODO: Update to real repository name
+# TODO: Update to real repository name
 CONTRACT_NAME_REPO=$1
 TOKEN="$2"
 USER_NAME="$3"
@@ -89,7 +89,7 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 
 	GET_LATEST_COMMIT_HASH_CMD="curl -L -s \
   -H \"Accept: application/vnd.github.sha\" \
-  -H \"Authorization: Bearer ghu_NIGXUrVVAhyX96CVk9zI4dfMZHJhUt4T6nUf\" \
+  -H \"Authorization: $TOKEN\" \
   -H \"X-GitHub-Api-Version: 2022-11-28\" \
   https://api.github.com/repos/$FULL_REPO_NAME/commits/main"
 
