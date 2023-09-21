@@ -85,7 +85,7 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 	echo "Verify checksum successfully, create release tag ..."
 	echo "USER_NAME: $USER_NAME CONTRACT_NAME: $CONTRACT_NAME"
 	# Query repository with name
-	FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME)
+	FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME_REPO)
 	FULL_REPO_NAME=${FULL_REPO_NAME//\"/}
 	echo "FULL_REPO_NAME: $FULL_REPO_NAME"
 
