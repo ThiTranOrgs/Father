@@ -83,21 +83,24 @@ echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSU
 if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 
 	echo "Verify checksum successfully, create release tag ..."
+	echo "USER_NAME: $USER_NAME CONTRACT_NAME: $CONTRACT_NAME"
 	# Query repository with name
 	FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME)
 	FULL_REPO_NAME=${FULL_REPO_NAME//\"/}
+	echo "FULL_REPO_NAME: $FULL_REPO_NAME"
 
 	GET_LATEST_COMMIT_HASH_CMD="curl -L -s \
   -H \"Accept: application/vnd.github.sha\" \
   -H \"Authorization: $TOKEN\" \
   -H \"X-GitHub-Api-Version: 2022-11-28\" \
   https://api.github.com/repos/$FULL_REPO_NAME/commits/main"
-
 	COMMIT_HASH=$(eval $GET_LATEST_COMMIT_HASH_CMD)
+	echo "COMMIT_HASH: $COMMIT_HASH"
+	echo $COMMIT_HASH | grep -q "Not Found"
 	RETURN_CODE=$?
-	if [ $RETURN_CODE -ne 0 ]; then
+	if [ $RETURN_CODE -eq 0 ]; then
 		echo "failed to get commit hash of $FULL_REPO_NAME"
-		return 1
+		exit 1
 	fi
 
 	# Make a release only if the repository did not released
@@ -107,12 +110,11 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
   https://api.github.com/repos/$FULL_REPO_NAME/releases/latest"
 
 	RELEASE=$(eval $CHECK_RELEASE_CMD)
-	echo "==== $COMMIT_HASH ==== $FULL_REPO_NAME ==== $RELEASE"
+	echo "RELEASE: $RELEASE"
 	echo $RELEASE | grep -q "Not Found"
 	RETURN_CODE=$?
 	# Make release in case no release yet
 	if [ $RETURN_CODE -eq 0 ]; then
-		echo "RELEASE: $USER_NAME==========="
 		curl -L -s -X POST \
 			-H "Accept: application/vnd.github+json" \
 			-H "Authorization: $TOKEN" \
