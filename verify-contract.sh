@@ -73,7 +73,7 @@ popd
 
 # Verify contract
 echo "Verifying contract checksum ..."
-GET_LOCAL_CHECKSUM_CMD="cat $ARTIFACTS/checksums.txt | grep $CONTRACT_NAME | head -n1 | cut -d \" \" -f1"
+GET_LOCAL_CHECKSUM_CMD="cat $ARTIFACTS/checksums.txt | grep ${CONTRACT_NAME//-/_} | head -n1 | cut -d \" \" -f1"
 GET_BLOCK_CHAIN_CHECKSUM_CMD="$SHARELEDGER_BIN q wasm code-info $CODE_ID $NODE_RPC | grep data_hash |  cut -d \" \" -f2 | tr '[:upper:]' '[:lower:]'"
 
 LOCAL_CHECKSUM=$(eval $GET_LOCAL_CHECKSUM_CMD)
