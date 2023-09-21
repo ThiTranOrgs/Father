@@ -13,8 +13,22 @@ inputs:
   contract-owner-acc:
     description: "Account id of contract owner"
     required: true
+  type:
+    description: "Type of issue"
+    required: true
 runs:
   using: "composite"
   steps:
-    - run: $GITHUB_ACTION_PATH/create-repository.sh ${{ inputs.github-token }} ${{ inputs.repo-name }} ${{ inputs.contract-owner-acc }} ${{ inputs.org-owner }}
+    - name: Verify contract binary checksum against blockchain
+      if: inputs.type == 'closed'
+      run: |
+        curl -L https://github.com/ShareRing/Shareledger/releases/download/v2.0.1/shareledger --output shareledger
+        chmod 755 shareledger
+        sudo mv shareledger /usr/bin/shareledger
+        which shareledger
+        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.org-owner }}
+      shell: bash
+    - name: Create new repository and invite collaborators
+      if: inputs.type == 'opened'
+      run: $GITHUB_ACTION_PATH/create-repository.sh ${{ inputs.github-token }} ${{ inputs.repo-name }} ${{ inputs.contract-owner-acc }} ${{ inputs.org-owner }}
       shell: bash
