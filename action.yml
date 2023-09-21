@@ -21,9 +21,9 @@ runs:
   steps:
     - name: Verify contract binary checksum against blockchain
       if: inputs.type == 'closed'
-      run: $GITHUB_ACTION_PATH/prepare.sh ${{ inputs.org-owner }} ${{ inputs.repo-name }}
-      shell: bash
-      run: $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.org-owner }}
+      run: |
+        $GITHUB_ACTION_PATH/prepare.sh ${{ inputs.org-owner }} ${{ inputs.repo-name }}
+        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.org-owner }}
       shell: bash
     - name: Create new repository and invite collaborators
       if: inputs.type == 'opened'
