@@ -14,15 +14,16 @@ CODE_ID_FILE="$CONTRACT_DIR/$CONTRACT_NAME_REPO/CODE_ID"
 ARTIFACTS="$SOURCE_DIR/artifacts"
 NODE_RPC="--node tcp://tencent.blockchain.testnet.sharetoken.io:26657/ --chain-id ShareRing-LifeStyle"
 SHARELEDGER_BIN="shareledger"
+VALID_RELEASE_TAG="verified"
 CODE_ID=$(<$CODE_ID_FILE)
 
 # If this repository already have a release tag, skip Verify checksum for it
 RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-H "Accept: application/vnd.github+json" \
 	-H "X-GitHub-Api-Version: 2022-11-28" \
-	https://api.github.com/repos/$FULL_REPO_NAME/releases/latest)
+	https://api.github.com/repos/$FULL_REPO_NAME/releases/tags/$VALID_RELEASE_TAG)
 if [ $RETURN_CODE -ne 200 ]; then
-	echo "Contract that released by contract owner will be ignored!"
+	echo "Check release for $FULL_REPO_NAME failed!"
 	exit 1
 fi
 

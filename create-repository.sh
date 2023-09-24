@@ -28,7 +28,7 @@ RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	https://api.github.com/repos/$ORG_OWNER/$REPO_NAME/collaborators/$CONTRACT_OWNER \
 	-d '{"permission":"push"}')
 
-if [ $RETURN_CODE -ne 200 ]; then
+if [ $RETURN_CODE -ne 201 ]; then
 	echo "failed to invite collaborator!"
 	exit 1
 fi
