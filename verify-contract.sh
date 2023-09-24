@@ -23,6 +23,7 @@ RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-H "Authorization: Bearer $TOKEN" \
 	-H "X-GitHub-Api-Version: 2022-11-28" \
 	https://api.github.com/repos/$FULL_REPO_NAME/releases/tags/$VALID_RELEASE_TAG)
+echo "========$RETURN_CODE"
 if [ $RETURN_CODE -eq 200 ]; then
 	echo "Check release for $CONTRACT_NAME_REPO failed!"
 	exit 1
