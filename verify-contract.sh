@@ -20,10 +20,11 @@ CODE_ID=$(<$CODE_ID_FILE)
 # If this repository already have a release tag, skip Verify checksum for it
 RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-H "Accept: application/vnd.github+json" \
+	-H \"Authorization: Bearer $TOKEN\" \
 	-H "X-GitHub-Api-Version: 2022-11-28" \
 	https://api.github.com/repos/$FULL_REPO_NAME/releases/tags/$VALID_RELEASE_TAG)
-if [ $RETURN_CODE -ne 200 ]; then
-	echo "Check release for $FULL_REPO_NAME failed!"
+if [ $RETURN_CODE -eq 200 ]; then
+	echo "Check release for $CONTRACT_NAME_REPO failed!"
 	exit 1
 fi
 
