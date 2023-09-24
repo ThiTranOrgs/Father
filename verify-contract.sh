@@ -20,7 +20,7 @@ CODE_ID=$(<$CODE_ID_FILE)
 # If this repository already have a release tag, skip Verify checksum for it
 RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-H "Accept: application/vnd.github+json" \
-	-H \"Authorization: Bearer $TOKEN\" \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "X-GitHub-Api-Version: 2022-11-28" \
 	https://api.github.com/repos/$FULL_REPO_NAME/releases/tags/$VALID_RELEASE_TAG)
 if [ $RETURN_CODE -eq 200 ]; then
@@ -106,15 +106,15 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 		exit 1
 	fi
 
-	RETURN_CODE=$(curl -L -s o /dev/null -w "%{http_code}" -X POST \
+	RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" -X POST \
 		-H "Accept: application/vnd.github+json" \
 		-H "Authorization: Bearer $TOKEN" \
 		-H "X-GitHub-Api-Version: 2022-11-28" \
 		https://api.github.com/repos/$FULL_REPO_NAME/releases \
-		-d "{\"tag_name\":\"verified\",\"target_commitish\":\"$COMMIT_HASH\",\"name\":\"Verified release\",\"body\":\"This $CONTRACT_NAME contract was verified as match with the contract deploy on blockchain by ShareRing!\",\"draft\":false,\"prerelease\":false,\"generate_release_note\":false}")
+		-d "{\"tag_name\":\"verified\",\"target_commitish\":\"$COMMIT_HASH\",\"name\":\"Verified release\",\"body\":\"This $CONTRACT_NAME contract was verified as match with the contract deploy on blockchain by ShareRing\",\"draft\":false,\"prerelease\":false,\"generate_release_note\":false}")
 	if [ $RETURN_CODE -ne 201 ]; then
 		echo "failed to create new release for $FULL_REPO_NAME"
-		exit -1
+		exit 1
 	fi
 else
 	echo "The local checksum not matches with the checksum store on block chain for $CONTRACT_NAME"
