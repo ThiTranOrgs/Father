@@ -16,4 +16,5 @@ sudo apt-get install -y jq
 
 git clone $REPO_LINK $REPO_DIR
 
+echo "Prepare env to run github action finished!"
 exit 0

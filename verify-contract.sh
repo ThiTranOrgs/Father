@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# TODO: Update to real repository name
 CONTRACT_NAME_REPO=$1
 TOKEN="$2"
-USER_NAME="$3"
+GITHUB_USER_NAME="$3"
 
 ROOT_DIR="$PWD"
 CONTRACT_DIR="$ROOT_DIR/src"
-#TODO: specific real directory
 SOURCE_DIR="$CONTRACT_DIR/$CONTRACT_NAME_REPO/src"
 CONTRACT_NAME_FILE="$CONTRACT_DIR/$CONTRACT_NAME_REPO/CONTRACT_NAME"
 RUST_IMAGE_FILE="$CONTRACT_DIR/$CONTRACT_NAME_REPO/IMAGE_BUILDER"
@@ -15,11 +13,18 @@ IS_PUBLIC_REPO="$CONTRACT_DIR/$CONTRACT_NAME_REPO/IS_PUBLIC_REPO"
 CODE_ID_FILE="$CONTRACT_DIR/$CONTRACT_NAME_REPO/CODE_ID"
 ARTIFACTS="$SOURCE_DIR/artifacts"
 NODE_RPC="--node tcp://tencent.blockchain.testnet.sharetoken.io:26657/ --chain-id ShareRing-LifeStyle"
-#TODO: The github workflow need to curl the shareledger binary
 SHARELEDGER_BIN="shareledger"
-#TODO: Update ShareRing github user name
 CODE_ID=$(<$CODE_ID_FILE)
-#TODO: Will use secrets instead
+
+# If this repository already have a release tag, skip Verify checksum for it
+RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
+	-H "Accept: application/vnd.github+json" \
+	-H "X-GitHub-Api-Version: 2022-11-28" \
+	https://api.github.com/repos/$FULL_REPO_NAME/releases/latest)
+if [ $RETURN_CODE -ne 200 ]; then
+	echo "Contract that released by contract owner will be ignored!"
+	exit 1
+fi
 
 # Check for required files
 if [ ! -f $CONTRACT_NAME_FILE ] || [ ! -f $RUST_IMAGE_FILE ] || [ ! -f $IS_PUBLIC_REPO ] || [ ! -f $CODE_ID_FILE ]; then
@@ -32,7 +37,6 @@ if [ ! -d "$SOURCE_DIR/artifacts" ]; then
 	rm -f $SOURCE_DIR/artifacts/*
 fi
 
-# TODO: Improve to search only for dir name with number instead of *
 CONTRACT_NAME="$(<$CONTRACT_NAME_FILE)"
 IMAGE="$(<$RUST_IMAGE_FILE)"
 IS_PUBLIC="$(<$IS_PUBLIC_REPO)"
@@ -42,7 +46,6 @@ IS_PUBLIC="$(<$IS_PUBLIC_REPO)"
 
 pushd $SOURCE_DIR
 
-# Build all contracts in a workspace
 if [ "$CONTRACT_NAME" = "" ]; then
 	echo "Compiling smart contracts for a workspace ..."
 	docker run --rm -v "$(pwd)":/code \
@@ -83,11 +86,9 @@ echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSU
 if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 
 	echo "Verify checksum successfully, create release tag ..."
-	echo "USER_NAME: $USER_NAME CONTRACT_NAME: $CONTRACT_NAME"
 	# Query repository with name
-	FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME_REPO)
+	FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$GITHUB_USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME_REPO)
 	FULL_REPO_NAME=${FULL_REPO_NAME//\"/}
-	echo "FULL_REPO_NAME: $FULL_REPO_NAME"
 
 	GET_LATEST_COMMIT_HASH_CMD="curl -L -s \
   -H \"Accept: application/vnd.github.sha\" \
@@ -103,26 +104,18 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 		exit 1
 	fi
 
-	# Make a release only if the repository did not released
-	CHECK_RELEASE_CMD="curl -L -s \
-  -H \"Accept: application/vnd.github+json\" \
-  -H \"X-GitHub-Api-Version: 2022-11-28\" \
-  https://api.github.com/repos/$FULL_REPO_NAME/releases/latest"
-
-	RELEASE=$(eval $CHECK_RELEASE_CMD)
-	echo "RELEASE: $RELEASE"
-	echo $RELEASE | grep -q "Not Found"
-	RETURN_CODE=$?
-	# Make release in case no release yet
-	if [ $RETURN_CODE -eq 0 ]; then
-		curl -L -s -X POST \
-			-H "Accept: application/vnd.github+json" \
-			-H "Authorization: Bearer $TOKEN" \
-			-H "X-GitHub-Api-Version: 2022-11-28" \
-			https://api.github.com/repos/$FULL_REPO_NAME/releases \
-			-d "{\"tag_name\":\"verified\",\"target_commitish\":\"$COMMIT_HASH\",\"name\":\"Verified release\",\"body\":\"This $CONTRACT_NAME contract was verified as match with the contract deploy on blockchain!\",\"draft\":false,\"prerelease\":false,\"generate_release_note\":false}"
+	RETURN_CODE=$(curl -L -s o /dev/null -w "%{http_code}" -X POST \
+		-H "Accept: application/vnd.github+json" \
+		-H "Authorization: Bearer $TOKEN" \
+		-H "X-GitHub-Api-Version: 2022-11-28" \
+		https://api.github.com/repos/$FULL_REPO_NAME/releases \
+		-d "{\"tag_name\":\"verified\",\"target_commitish\":\"$COMMIT_HASH\",\"name\":\"Verified release\",\"body\":\"This $CONTRACT_NAME contract was verified as match with the contract deploy on blockchain by ShareRing!\",\"draft\":false,\"prerelease\":false,\"generate_release_note\":false}")
+	if [ $RETURN_CODE -ne 201 ]; then
+		echo "failed to create new release for $FULL_REPO_NAME"
+		exit -1
 	fi
 else
+	echo "The local checksum not matches with the checksum store on block chain for $CONTRACT_NAME"
 	exit 1
 fi
 
