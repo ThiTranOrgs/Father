@@ -17,6 +17,9 @@ SHARELEDGER_BIN="shareledger"
 VALID_RELEASE_TAG="verified"
 CODE_ID=$(<$CODE_ID_FILE)
 
+# Query repository with name
+FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$GITHUB_USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME_REPO)
+FULL_REPO_NAME=${FULL_REPO_NAME//\"/}
 # If this repository already have a release tag, skip Verify checksum for it
 RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-H "Accept: application/vnd.github+json" \
@@ -89,9 +92,6 @@ echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSU
 if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 
 	echo "Verify checksum successfully, create release tag ..."
-	# Query repository with name
-	FULL_REPO_NAME=$(curl -L -s https://api.github.com/users/$GITHUB_USER_NAME/repos | jq '.[].full_name' | grep $CONTRACT_NAME_REPO)
-	FULL_REPO_NAME=${FULL_REPO_NAME//\"/}
 
 	GET_LATEST_COMMIT_HASH_CMD="curl -L -s \
   -H \"Accept: application/vnd.github.sha\" \
