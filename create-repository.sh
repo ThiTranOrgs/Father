@@ -14,7 +14,7 @@ RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	https://api.github.com/repos/$ORG_OWNER/Template/generate \
 	-d "{\"owner\":\"$ORG_OWNER\",\"name\":\"$REPO_NAME\",\"include_all_branches\":false,\"private\":false}")
 
-if [ $RETURN_CODE -ne 201 ]; then
+if [ $RETURN_CODE -eq 201 ]; then
 	echo "failed to create new repository with return code: $RETURN_CODE. Hint: it might existed!"
 	exit 1
 fi
