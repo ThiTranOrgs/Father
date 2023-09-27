@@ -5,6 +5,11 @@ REPO_NAME=$2
 CONTRACT_OWNER=$3
 ORG_OWNER=$4
 
+if [[ ! $REPO_NAME =~ ^[0-9]+$ ]]; then
+	echo "Repository name must be code id of smart contract after deploy on blockchain."
+	exit 1
+fi
+
 # Create new repository for user to upload their contract code
 RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-X POST \
