@@ -1,11 +1,13 @@
 name: "On Issue Opened/CLosed"
 on:
   issues:
-    types: [opened, closed]
+    types: [opened]
+  release:
+    types: [published]
 
 jobs:
   run:
-    name: Run Bot
+    name: Verify contract source code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -13,6 +15,11 @@ jobs:
         with:
           github-token: "${{ secrets.REPO_TOKEN }}"
           org-owner: "${{ vars.ORG_OWNER }}"
-          repo-name: "${{ github.event.issue.title }}"
-          contract-owner-acc: "${{ github.event.issue.user.login }}"
           type: "${{ github.event.action }}"
+          issue-repo-name: "${{ github.event.issue.title }}"
+          issue-contract-owner-acc: "${{ github.event.issue.user.login }}"
+          issue-number: "${{ github.event.issue.number }}"
+          release-repo: "${{ github.event.release.repository }}"
+          release-id: "${{ github.event.release.release.id }}"
+          release-name: "${{ github.event.release.release.name }}"
+          release-tag-name: "${{ github.event.release.release.name }}"

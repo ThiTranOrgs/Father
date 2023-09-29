@@ -4,28 +4,43 @@ inputs:
   github-token:
     description: "Token"
     required: true
-  repo-name:
+  issue-repo-name:
     description: "Name for new repository"
     required: true
   org-owner:
     description: "Account name of organization owner"
     required: true
-  contract-owner-acc:
+  issue-contract-owner-acc:
     description: "Account id of contract owner"
+    required: true
+  release-repo:
+    description: "The repository on GitHub where the release created"
+    required: true
+  release-id:
+    description: "Release ID"
+    required: true
+  issue-number:
+    description: "Issue number"
     required: true
   type:
     description: "Type of issue"
+    required: true
+  release-name:
+    description: "Name of release"
+    required: true
+  release-tag-name:
+    description: "Release tag name"
     required: true
 runs:
   using: "composite"
   steps:
     - name: Verify contract binary checksum against blockchain
-      if: inputs.type == 'closed'
+      if: inputs.type == 'published'
       run: |
-        $GITHUB_ACTION_PATH/prepare.sh ${{ inputs.org-owner }} ${{ inputs.repo-name }}
-        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.org-owner }}
+        $GITHUB_ACTION_PATH/prepare.sh ${{ inputs.org-owner }} ${{ inputs.release-repo }}
+        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.release-repo }} ${{ inputs.github-token }} ${{ inputs.org-owner }} ${{ inputs.release-id }} ${{ inputs.release-name }} ${{ inputs.release-tag-name }}
       shell: bash
     - name: Create new repository and invite collaborators
       if: inputs.type == 'opened'
-      run: $GITHUB_ACTION_PATH/create-repository.sh ${{ inputs.github-token }} ${{ inputs.repo-name }} ${{ inputs.contract-owner-acc }} ${{ inputs.org-owner }}
+      run: $GITHUB_ACTION_PATH/create-repository.sh ${{ inputs.github-token }} ${{ inputs.issue-repo-name }} ${{ inputs.issue-contract-owner-acc }} ${{ inputs.org-owner }} ${{ inputs.issue-number }}
       shell: bash

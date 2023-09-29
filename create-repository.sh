@@ -4,6 +4,7 @@ TOKEN=$1
 REPO_NAME=$2
 CONTRACT_OWNER=$3
 ORG_OWNER=$4
+ISSUE_NUMBER=$5
 
 if [[ ! $REPO_NAME =~ ^[0-9]+$ ]]; then
 	echo "Repository name must be code id of smart contract after deploy on blockchain."
@@ -36,4 +37,17 @@ RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 if [ $RETURN_CODE -ne 201 ]; then
 	echo "failed to invite collaborator!"
 	exit 1
+fi
+
+RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
+	-X PATCH \
+	-H "Accept: application/vnd.github+json" \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "X-GitHub-Api-Version: 2022-11-28" \
+	https://api.github.com/repos/$ORG_OWNER/$REPO_NAME/issues/$ISSUE_NUMBER \
+	-d '{"state":"closed"')
+
+if [ $RETURN_CODE -ne 200 ]; then
+	echo "failed to close issue number $ISSUE_NUMBER of $ORG_OWNER/$REPO_NAME"
+	exit -1
 fi
