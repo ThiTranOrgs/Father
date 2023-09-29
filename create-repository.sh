@@ -6,6 +6,7 @@ CONTRACT_OWNER=$3
 ORG_OWNER=$4
 ISSUE_NUMBER=$5
 NODE_RPC="--node tcp://tencent.blockchain.testnet.sharetoken.io:26657/ --chain-id ShareRing-LifeStyle"
+SUBMITSION_REPO="Father"
 
 curl -L https://github.com/ShareRing/Shareledger/releases/download/v2.0.1/shareledger --output shareledger
 chmod 755 shareledger
@@ -52,8 +53,8 @@ RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-H "Accept: application/vnd.github+json" \
 	-H "Authorization: Bearer $TOKEN" \
 	-H "X-GitHub-Api-Version: 2022-11-28" \
-	https://api.github.com/repos/$ORG_OWNER/$REPO_NAME/issues/$ISSUE_NUMBER \
-	-d '{"state":"closed"')
+	https://api.github.com/repos/$ORG_OWNER/$SUBMITSION_REPO/issues/$ISSUE_NUMBER \
+	-d '{"state":"closed"}')
 
 if [ $RETURN_CODE -ne 200 ]; then
 	echo "failed to close issue number $ISSUE_NUMBER of $ORG_OWNER/$REPO_NAME"
