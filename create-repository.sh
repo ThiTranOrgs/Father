@@ -5,9 +5,17 @@ REPO_NAME=$2
 CONTRACT_OWNER=$3
 ORG_OWNER=$4
 ISSUE_NUMBER=$5
+NODE_RPC="--node tcp://tencent.blockchain.testnet.sharetoken.io:26657/ --chain-id ShareRing-LifeStyle"
 
-if [[ ! $REPO_NAME =~ ^[0-9]+$ ]]; then
-	echo "Repository name must be code id of smart contract after deploy on blockchain."
+curl -L https://github.com/ShareRing/Shareledger/releases/download/v2.0.1/shareledger --output shareledger
+chmod 755 shareledger
+sudo mv shareledger /usr/bin/shareledger
+which shareledger
+
+shareledger q wasm code-info $REPO_NAME $NODE_RPC &>/dev/null
+RETURN_CODE=$?
+if [ $RETURN_CODE -ne 0 ]; then
+	echo "Repository name must be code id of smart contract that deployed on blockchain."
 	exit 1
 fi
 

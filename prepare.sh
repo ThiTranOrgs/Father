@@ -13,6 +13,7 @@ which shareledger
 sudo apt-get update
 sudo apt-get install -y git
 sudo apt-get install -y jq
+sudo apt-get install -y openssl
 
 git clone $REPO_LINK $REPO_DIR
 
