@@ -1,7 +1,7 @@
-name: "On Issue Opened/CLosed"
+name: "Verify Contract"
 on:
-  issues:
-    types: [opened]
+  repository_dispatch::
+    types: [verify-checksum]
 
 jobs:
   run:
@@ -14,6 +14,6 @@ jobs:
           github-token: "${{ secrets.REPO_TOKEN }}"
           org-owner: "${{ vars.ORG_OWNER }}"
           type: "${{ github.event.action }}"
-          issue-repo-name: "${{ github.event.issue.title }}"
-          issue-contract-owner-acc: "${{ github.event.issue.user.login }}"
-          issue-number: "${{ github.event.issue.number }}"
+          release-repo: "${{ github.event.client_payload.repository }}"
+          release-id: "${{ github.event.client_payload.releaseid }}"
+          release-tag-name: "${{ github.event.client_payload.tagname }}"

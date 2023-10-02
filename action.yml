@@ -25,9 +25,6 @@ inputs:
   type:
     description: "Type of issue"
     required: true
-  release-name:
-    description: "Name of release"
-    required: true
   release-tag-name:
     description: "Release tag name"
     required: true
@@ -35,10 +32,10 @@ runs:
   using: "composite"
   steps:
     - name: Verify contract binary checksum against blockchain
-      if: inputs.type == 'published'
+      if: inputs.type == 'sample.collected'
       run: |
         $GITHUB_ACTION_PATH/prepare.sh ${{ inputs.org-owner }} ${{ inputs.release-repo }}
-        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.release-repo }} ${{ inputs.github-token }} ${{ inputs.org-owner }} ${{ inputs.release-id }} ${{ inputs.release-name }} ${{ inputs.release-tag-name }}
+        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.release-repo }} ${{ inputs.github-token }} ${{ inputs.org-owner }} ${{ inputs.release-id }} ${{ inputs.release-tag-name }}
       shell: bash
     - name: Create new repository and invite collaborators
       if: inputs.type == 'opened'

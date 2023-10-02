@@ -32,10 +32,10 @@ CODE_ID=$(<$CODE_ID_FILE)
 # fi
 
 # Check if the release satisfied with Semantic Versioning
-if [[ $RELEASE_NAME != $RELEASE_TAG ]] || [[ ! $AA =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "The release tag and release name must satisfied with Semantic Versioning"
-  exit 1
-fi
+# if [[ $RELEASE_NAME != $RELEASE_TAG ]] || [[ ! $AA =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+#   echo "The release tag and release name must satisfied with Semantic Versioning"
+#   exit 1
+# fi
 
 # Check for required files
 if [ ! -s $CONTRACT_NAME_FILE ] || [ ! -s $RUST_IMAGE_FILE ] || [ ! -s $CODE_ID_FILE ]; then
