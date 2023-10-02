@@ -30,7 +30,7 @@ RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 	-d "{\"owner\":\"$ORG_OWNER\",\"name\":\"$REPO_NAME\",\"include_all_branches\":false,\"private\":false}")
 
 if [ $RETURN_CODE -ne 201 ]; then
-	echo "failed to create new repository with return code: $RETURN_CODE. Hint: it might existed!"
+	echo "failed to create new repository with return code: $RETURN_CODE. Hint: it might existed or token exprired!"
 	exit 1
 fi
 

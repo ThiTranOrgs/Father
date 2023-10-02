@@ -105,19 +105,18 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 		exit 1
 	fi
 
-	SHORT_BASE_64=${BASE_64:0:12}
 	echo "Verify checksum successfully, update release ..."
 	RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" -X PATCH \
 		-H "Accept: application/vnd.github+json" \
 		-H "Authorization: Bearer $TOKEN" \
 		-H "X-GitHub-Api-Version: 2022-11-28" \
 		https://api.github.com/repos/$FULL_REPO_NAME/releases/$RELEASE_ID \
-		-d "{\"tag_name\":\"v1.0.0_$SHORT_BASE_64\",\"target_commitish\":\"$COMMIT_HASH\",\"name\":\"v1.0.0_$SHORT_BASE_64\",\"body\":\"$LOCAL_CHECKSUM_$BASE_64\")
+		-d "{\"target_commitish\":\"$COMMIT_HASH\",\"body\":\"$LOCAL_CHECKSUM_$BASE_64\"}")
 	if [ $RETURN_CODE -ne 201 ]; then
-		echo "failed to create new release for $FULL_REPO_NAME"
+		echo "failed to update release for $FULL_REPO_NAME"
 		exit 1
 	fi
 else
-	echo "The local checksum not matches with the checksum stored on block chain"
+	echo "The local checksum not matches with the checksum stored on blockchain"
 	exit 1
 fi
