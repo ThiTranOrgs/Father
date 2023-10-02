@@ -1,6 +1,6 @@
 name: "Verify Contract"
 on:
-  repository_dispatch::
+  repository_dispatch:
     types: [verify-checksum]
 
 jobs:
