@@ -20,7 +20,7 @@ ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
 # TODO: Update path to secrets
 PRIVKEY_FILE="/tmp/private.pem"
 # CODE_ID=$(<$CODE_ID_FILE)
-echo -n "PRIVATE_KEY" >/tmp/aa
+echo -n "$PRIVATE_KEY" >/tmp/aa
 cat /tmp/aa
 echo -n "$PRIVATE_KEY" | base64 -d >$PRIVKEY_FILE
 cat $PRIVKEY_FILE
