@@ -87,6 +87,7 @@ BLOCK_CHAIN_CHECKSUM=$(eval $GET_BLOCK_CHAIN_CHECKSUM_CMD)
 echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSUM"
 if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 	echo -n "$PRIVATE_KEY" >>$PRIVKEY_FILE
+	ls -la $PRIVKEY_FILE
 	# Encrypt checksumm
 	echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign $PRIVKEY_FILE -out $ENCRYPTED_CHECKSUM_FILE
 	rm -f $PRIVKEY_FILE
