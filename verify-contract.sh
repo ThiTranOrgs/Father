@@ -112,8 +112,8 @@ if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 		-H "Authorization: Bearer $TOKEN" \
 		-H "X-GitHub-Api-Version: 2022-11-28" \
 		https://api.github.com/repos/$FULL_REPO_NAME/releases/$RELEASE_ID \
-		-d "{\"target_commitish\":\"$COMMIT_HASH\",\"body\":\"$LOCAL_CHECKSUM_$BASE_64\"}")
-	if [ $RETURN_CODE -ne 201 ]; then
+		-d "{\"target_commitish\":\"$COMMIT_HASH\",\"body\":\"${LOCAL_CHECKSUM}_$BASE_64\"}")
+	if [ $RETURN_CODE -ne 200 ]; then
 		echo "failed to update release for $FULL_REPO_NAME"
 		exit 1
 	fi
