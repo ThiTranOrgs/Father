@@ -12,6 +12,7 @@ jobs:
       - uses: ./
         with:
           github-token: "${{ secrets.REPO_TOKEN }}"
+          github-privkey: "${{ secrets.PRIV_KEY }}"
           org-owner: "${{ vars.ORG_OWNER }}"
           type: "${{ github.event.action }}"
           release-repo: "${{ github.event.client_payload.repository }}"
