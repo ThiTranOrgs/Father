@@ -19,10 +19,8 @@ SHARELEDGER_BIN="shareledger"
 ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
 # TODO: Update path to secrets
 PRIVKEY_FILE="/tmp/private.pem"
-# CODE_ID=$(<$CODE_ID_FILE)
-echo -n "$PRIVATE_KEY" >/tmp/aa
-cat /tmp/aa
-exit 0
+CODE_ID=$(<$CODE_ID_FILE)
+
 # # If this repository already have a release tag, skip Verify checksum for it
 # RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 # 	-H "Accept: application/vnd.github+json" \
@@ -87,7 +85,7 @@ BLOCK_CHAIN_CHECKSUM=$(eval $GET_BLOCK_CHAIN_CHECKSUM_CMD)
 
 echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSUM"
 if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
-	echo -n "$PRIVATE_KEY" | base64 -d >$PRIVKEY_FILE
+	echo -n "$PRIVATE_KEY" >$PRIVKEY_FILE
 	# Encrypt checksumm
 	echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign $PRIVKEY_FILE -out $ENCRYPTED_CHECKSUM_FILE
 	rm -f $PRIVKEY_FILE
