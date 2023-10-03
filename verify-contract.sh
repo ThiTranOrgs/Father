@@ -19,7 +19,11 @@ SHARELEDGER_BIN="shareledger"
 ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
 # TODO: Update path to secrets
 PRIVKEY_FILE="/tmp/private.pem"
-CODE_ID=$(<$CODE_ID_FILE)
+# CODE_ID=$(<$CODE_ID_FILE)
+echo -n "PRIVATE_KEY" >/tmp/aa
+cat /tmp/aa
+echo -n "$PRIVATE_KEY" | base64 -d >$PRIVKEY_FILE
+cat $PRIVKEY_FILE
 
 # # If this repository already have a release tag, skip Verify checksum for it
 # RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
