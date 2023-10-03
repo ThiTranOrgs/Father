@@ -21,7 +21,8 @@ ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
 PRIVKEY_FILE="/tmp/private.pem"
 CODE_ID=$(<$CODE_ID_FILE)
 
-echo $PRIVATE_KEY
+echo $PRIVATE_KEY >>$PRIVKEY_FILE
+cat $PRIVKEY_FILE
 exit 0
 
 # # If this repository already have a release tag, skip Verify checksum for it
