@@ -2,7 +2,10 @@ name: "Action on issue open"
 description: "create reposository on issue open event"
 inputs:
   github-token:
-    description: "Token"
+    description: "Repository Token"
+    required: true
+  github-privkey:
+    description: "Github Private Key"
     required: true
   issue-repo-name:
     description: "Name for new repository"
@@ -35,7 +38,7 @@ runs:
       if: inputs.type == 'verify-checksum'
       run: |
         $GITHUB_ACTION_PATH/prepare.sh ${{ inputs.org-owner }} ${{ inputs.release-repo }}
-        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.release-repo }} ${{ inputs.github-token }} ${{ inputs.org-owner }} ${{ inputs.release-id }} ${{ inputs.release-tag-name }}
+        $GITHUB_ACTION_PATH/verify-contract.sh ${{ inputs.release-repo }} ${{ inputs.github-token }} ${{ inputs.org-owner }} ${{ inputs.release-id }} ${{ inputs.release-tag-name }} ${{ inputs.github-privkey }}
       shell: bash
     - name: Create new repository and invite collaborators
       if: inputs.type == 'opened'

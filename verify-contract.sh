@@ -6,6 +6,7 @@ GITHUB_USER_NAME="$3"
 RELEASE_ID="$4"
 RELEASE_NAME="$5"
 RELEASE_TAG="$6"
+PRIVATE_KEY="$7"
 
 ROOT_DIR="$PWD"
 CONTRACT_DIR="$ROOT_DIR/src"
@@ -16,8 +17,9 @@ CODE_ID_FILE="$CONTRACT_DIR/$CONTRACT_NAME_REPO/CODE_ID"
 ARTIFACTS="$SOURCE_DIR/artifacts"
 NODE_RPC="--node tcp://tencent.blockchain.testnet.sharetoken.io:26657/ --chain-id ShareRing-LifeStyle"
 SHARELEDGER_BIN="shareledger"
-VALID_RELEASE_TAG="verified"
 ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
+# TODO: Update path to secrets
+PRIVKEY_FILE="/tmp/private.pem"
 CODE_ID=$(<$CODE_ID_FILE)
 
 # # If this repository already have a release tag, skip Verify checksum for it
@@ -36,6 +38,8 @@ CODE_ID=$(<$CODE_ID_FILE)
 #   echo "The release tag and release name must satisfied with Semantic Versioning"
 #   exit 1
 # fi
+#
+echo "============$ROOT_DIR========="
 
 # Check for required files
 if [ ! -s $CONTRACT_NAME_FILE ] || [ ! -s $RUST_IMAGE_FILE ] || [ ! -s $CODE_ID_FILE ]; then
@@ -83,8 +87,10 @@ BLOCK_CHAIN_CHECKSUM=$(eval $GET_BLOCK_CHAIN_CHECKSUM_CMD)
 
 echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSUM"
 if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
+	echo -n $PRIVATE_KEY >>$PRIVKEY_FILE
 	# Encrypt checksumm
-	echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign private.pem -out $ENCRYPTED_CHECKSUM_FILE
+	echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign $PRIVKEY_FILE -out $ENCRYPTED_CHECKSUM_FILE
+	rm -f $PRIVKEY_FILE
 	BASE_64=$(openssl base64 -in $ENCRYPTED_CHECKSUM_FILE)
 	# Remove encrypted checksum output file
 	rm -f $ENCRYPTED_CHECKSUM_FILE
