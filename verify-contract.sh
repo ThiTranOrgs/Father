@@ -6,9 +6,7 @@ GITHUB_USER_NAME="$3"
 RELEASE_ID="$4"
 RELEASE_TAG="$5"
 PRIVATE_KEY="$6"
-PRIVKEY_FIE="/tmp/private.pem"
-echo -n "$PRIVATE_KEY" >$PRIVKEY_FIE
-cat $PRIVKEY_FIE
+
 ROOT_DIR="$PWD"
 CONTRACT_DIR="$ROOT_DIR/src"
 SOURCE_DIR="$CONTRACT_DIR/$CONTRACT_NAME_REPO/src"
@@ -20,7 +18,6 @@ NODE_RPC="--node tcp://tencent.blockchain.testnet.sharetoken.io:26657/ --chain-i
 SHARELEDGER_BIN="shareledger"
 ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
 # TODO: Update path to secrets
-PRIVKEY_FILE="/tmp/private.pem"
 CODE_ID=$(<$CODE_ID_FILE)
 
 # # If this repository already have a release tag, skip Verify checksum for it
@@ -87,10 +84,8 @@ BLOCK_CHAIN_CHECKSUM=$(eval $GET_BLOCK_CHAIN_CHECKSUM_CMD)
 
 echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSUM"
 if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
-	echo -n "$PRIVATE_KEY" >$PRIVKEY_FILE
 	# Encrypt checksumm
-	echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign $PRIVKEY_FILE -out $ENCRYPTED_CHECKSUM_FILE
-	rm -f $PRIVKEY_FILE
+	echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign <(echo "$PRIVATE_KEY") -out $ENCRYPTED_CHECKSUM_FILE
 	BASE_64=$(openssl base64 -in $ENCRYPTED_CHECKSUM_FILE)
 	# Remove encrypted checksum output file
 	rm -f $ENCRYPTED_CHECKSUM_FILE
