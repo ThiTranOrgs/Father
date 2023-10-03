@@ -19,7 +19,7 @@ SHARELEDGER_BIN="shareledger"
 ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
 # TODO: Update path to secrets
 PRIVKEY_FILE="/tmp/private.pem"
-CODE_ID=$(<$CODE_ID_FILE)
+#CODE_ID=$(<$CODE_ID_FILE)
 
 echo $PRIVATE_KEY >>$PRIVKEY_FILE
 cat $PRIVKEY_FILE
