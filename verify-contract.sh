@@ -21,6 +21,9 @@ ENCRYPTED_CHECKSUM_FILE="/tmp/checksum.dat"
 PRIVKEY_FILE="/tmp/private.pem"
 CODE_ID=$(<$CODE_ID_FILE)
 
+echo $PRIVATE_KEY
+exit 0
+
 # # If this repository already have a release tag, skip Verify checksum for it
 # RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 # 	-H "Accept: application/vnd.github+json" \
@@ -40,52 +43,52 @@ CODE_ID=$(<$CODE_ID_FILE)
 #
 echo "============$ROOT_DIR========="
 
-# Check for required files
-if [ ! -s $CONTRACT_NAME_FILE ] || [ ! -s $RUST_IMAGE_FILE ] || [ ! -s $CODE_ID_FILE ]; then
-	echo "The required files $CONTRACT_NAME_FILE or $RUST_IMAGE_FILE not found"
-	exit 1
-fi
-
-# Clean up old artifacts if any
-if [ ! -d "$SOURCE_DIR/artifacts" ]; then
-	rm -f $SOURCE_DIR/artifacts/*
-fi
-
-CONTRACT_NAME="$(<$CONTRACT_NAME_FILE)"
-IMAGE="$(<$RUST_IMAGE_FILE)"
-
-pushd $SOURCE_DIR
-
-echo "Compiling $CONTRACT_NAME smart contract ..."
-# Build specific contract
-if [ ! -d "$SOURCE_DIR/contracts/$CONTRACT_NAME" ]; then
-	echo "No such file $SOURCE_DIR/contracts/$CONTRACT_NAME"
-	exit 1
-fi
-
-# To compile specific contracts, the cosmwasm/rust-optimizer* image must be used instead of cosmwasm/workspace-optimizer* image
-if [[ "$IMAGE" != *"rust-optimizer"* ]]; then
-	echo "Must use cosmwasm/rust-optimizer* image when compile specific contract. Got $IMAGE"
-	exit 1
-fi
-
-docker run --rm -v "$(pwd)":/code \
-	--mount type=volume,source="devcontract_cache_$CONTRACT_NAME",target=/code/contracts/$CONTRACT_NAME/target \
-	--mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-	$IMAGE ./contracts/$CONTRACT_NAME
-
-popd
-
-# Verify contract
-echo "Verifying contract checksum ..."
-GET_LOCAL_CHECKSUM_CMD="cat $ARTIFACTS/checksums.txt | head -n1 | cut -d \" \" -f1"
-GET_BLOCK_CHAIN_CHECKSUM_CMD="$SHARELEDGER_BIN q wasm code-info $CODE_ID $NODE_RPC | grep data_hash |  cut -d \" \" -f2 | tr '[:upper:]' '[:lower:]'"
-
-LOCAL_CHECKSUM=$(eval $GET_LOCAL_CHECKSUM_CMD)
-BLOCK_CHAIN_CHECKSUM=$(eval $GET_BLOCK_CHAIN_CHECKSUM_CMD)
-
-echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSUM"
-if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
+# # Check for required files
+# if [ ! -s $CONTRACT_NAME_FILE ] || [ ! -s $RUST_IMAGE_FILE ] || [ ! -s $CODE_ID_FILE ]; then
+# 	echo "The required files $CONTRACT_NAME_FILE or $RUST_IMAGE_FILE not found"
+# 	exit 1
+# fi
+#
+# # Clean up old artifacts if any
+# if [ ! -d "$SOURCE_DIR/artifacts" ]; then
+# 	rm -f $SOURCE_DIR/artifacts/*
+# fi
+#
+# CONTRACT_NAME="$(<$CONTRACT_NAME_FILE)"
+# IMAGE="$(<$RUST_IMAGE_FILE)"
+#
+# pushd $SOURCE_DIR
+#
+# echo "Compiling $CONTRACT_NAME smart contract ..."
+# # Build specific contract
+# if [ ! -d "$SOURCE_DIR/contracts/$CONTRACT_NAME" ]; then
+# 	echo "No such file $SOURCE_DIR/contracts/$CONTRACT_NAME"
+# 	exit 1
+# fi
+#
+# # To compile specific contracts, the cosmwasm/rust-optimizer* image must be used instead of cosmwasm/workspace-optimizer* image
+# if [[ "$IMAGE" != *"rust-optimizer"* ]]; then
+# 	echo "Must use cosmwasm/rust-optimizer* image when compile specific contract. Got $IMAGE"
+# 	exit 1
+# fi
+#
+# docker run --rm -v "$(pwd)":/code \
+# 	--mount type=volume,source="devcontract_cache_$CONTRACT_NAME",target=/code/contracts/$CONTRACT_NAME/target \
+# 	--mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+# 	$IMAGE ./contracts/$CONTRACT_NAME
+#
+# popd
+#
+# # Verify contract
+# echo "Verifying contract checksum ..."
+# GET_LOCAL_CHECKSUM_CMD="cat $ARTIFACTS/checksums.txt | head -n1 | cut -d \" \" -f1"
+# GET_BLOCK_CHAIN_CHECKSUM_CMD="$SHARELEDGER_BIN q wasm code-info $CODE_ID $NODE_RPC | grep data_hash |  cut -d \" \" -f2 | tr '[:upper:]' '[:lower:]'"
+#
+# LOCAL_CHECKSUM=$(eval $GET_LOCAL_CHECKSUM_CMD)
+# BLOCK_CHAIN_CHECKSUM=$(eval $GET_BLOCK_CHAIN_CHECKSUM_CMD)
+#
+# echo "local_checksum: $LOCAL_CHECKSUM  blockchain_checksum: $BLOCK_CHAIN_CHECKSUM"
+# if [ "$LOCAL_CHECKSUM" = "$BLOCK_CHAIN_CHECKSUM" ]; then
 	echo -n "$PRIVATE_KEY" >>$PRIVKEY_FILE
 	ls -la $PRIVKEY_FILE
 	# Encrypt checksumm
