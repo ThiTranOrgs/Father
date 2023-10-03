@@ -22,9 +22,7 @@ PRIVKEY_FILE="/tmp/private.pem"
 # CODE_ID=$(<$CODE_ID_FILE)
 echo -n "$PRIVATE_KEY" >/tmp/aa
 cat /tmp/aa
-echo -n "$PRIVATE_KEY" | base64 -d >$PRIVKEY_FILE
-cat $PRIVKEY_FILE
-
+exit 0
 # # If this repository already have a release tag, skip Verify checksum for it
 # RETURN_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" \
 # 	-H "Accept: application/vnd.github+json" \
