@@ -87,6 +87,7 @@ CODE_ID=$(<$CODE_ID_FILE)
 # Encrypt checksumm
 LOCAL_CHECKSUM="70549b63a5e28d741bf3f1d1afe0d7e971036b7a8d9849b4298d70718b4be0f3"
 KEY=$(echo $PRIVATE_KEY | base64 -d)
+echo ".$KEY."
 echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign <(echo -n "$KEY") -out $ENCRYPTED_CHECKSUM_FILE
 BASE_64=$(openssl base64 -in $ENCRYPTED_CHECKSUM_FILE)
 echo "=======$BASE_64"
