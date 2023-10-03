@@ -88,6 +88,7 @@ CODE_ID=$(<$CODE_ID_FILE)
 LOCAL_CHECKSUM="70549b63a5e28d741bf3f1d1afe0d7e971036b7a8d9849b4298d70718b4be0f3"
 echo "$LOCAL_CHECKSUM" | openssl dgst -sha256 -sign <(echo "$PRIVATE_KEY") -out $ENCRYPTED_CHECKSUM_FILE
 BASE_64=$(openssl base64 -in $ENCRYPTED_CHECKSUM_FILE)
+echo "=======$BASE_64"
 # Remove encrypted checksum output file
 rm -f $ENCRYPTED_CHECKSUM_FILE
 
@@ -113,7 +114,7 @@ RETURN_CODE=$(curl -L -X PATCH \
 	-H "Authorization: Bearer $TOKEN" \
 	-H "X-GitHub-Api-Version: 2022-11-28" \
 	https://api.github.com/repos/$FULL_REPO_NAME/releases/$RELEASE_ID \
-	-d "{\"target_commitish\":\"$COMMIT_HASH\",\"body\":\"${LOCAL_CHECKSUM}_$BASE_64\"}")
+	-d "{\"target_commitish\":\"$COMMIT_HASH\",\"body\":\"${LOCAL_CHECKSUM}_${BASE_64}\"}")
 # if [ $RETURN_CODE -ne 200 ]; then
 # 	echo "failed to update release for $FULL_REPO_NAME"
 # 	exit 1
