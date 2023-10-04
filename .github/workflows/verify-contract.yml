@@ -6,6 +6,7 @@ on:
 jobs:
   run:
     name: Verify contract source code
+    id: verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -19,7 +20,8 @@ jobs:
       #     type: "${{ github.event.action }}"
       #     release-repo: "${{ github.event.client_payload.Repository }}"
       #     release-id: "${{ github.event.client_payload.ReleaseID }}"
-      - name: Post to a Slack channel
+      - name: Notify valid repository
+        if: ${{ jobs.steps.verify.conclusion == 'success' }}
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -42,14 +44,50 @@ jobs:
             			"type": "section",
             			"text": {
             				"type": "mrkdwn",
-                    "text": "valid_release_id: *${{ github.event.client_payload.ReleaseID }}*"
+                    "text": "status: *verify passed*"
             			}
             		},
                 {
             			"type": "section",
             			"text": {
             				"type": "mrkdwn",
-            "text": "note: Use this request for more information: _curl -L -H \"Accept: application/vnd.github+json\" -H \"X-GitHub-Api-Version: 2022-11-28\" https://api.github.com/repos/${{ vars.ORG_OWNER }}/${{ github.event.client_payload.Repository }}/releases/${{ github.event.client_payload.ReleaseID }}_ :adet: :tan-do2: :khang:"
+                    "text": "source_link: ${{ github.event.client_payload.SourceLink }} :adet: :tan-do2: :khang:"
+            			}
+            		}
+            	]
+            }
+      - name: Notify invalid repository
+        if: ${{ jobs.steps.verify.conclusion != 'success' }}
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          # For posting a rich message using Block Kit
+          payload: |
+            {
+              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+                    "text": "repository: *${{ github.event.client_payload.Repository }}*"
+            			}
+            		},
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+                    "text": "status: *verify failed*"
+            			}
+            		},
+                {
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+                    "text": "source_link: ${{ github.event.client_payload.SourceLink }} :mai_do:"
             			}
             		}
             	]
