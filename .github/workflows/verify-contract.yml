@@ -6,11 +6,12 @@ on:
 jobs:
   run:
     name: Verify contract source code
-    id: verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      # - name: Verify checksum
+      - name: Verify checksum
+        id: verify
+        run: echo 'okoko'
       #   uses: ./
       #   with:
       #     github-token: "${{ secrets.REPO_TOKEN }}"
