@@ -32,8 +32,8 @@ jobs:
               "text": "GitHub Action build result: ${{ job.status }}",
               "blocks": [
                 {
-                  "type": "repository"
-                  "text: "repository: ${{ github.event.client_payload.Repository }}",
+                  "type": "repository",
+                  "text": "repository: ${{ github.event.client_payload.Repository }}",
                 }
               ]
             }
