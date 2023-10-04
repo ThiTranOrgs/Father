@@ -31,14 +31,28 @@ jobs:
             {
               "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
               "blocks": [
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+                    "text": "repository: *${{ github.event.client_payload.Repository }}*"
+            			}
+            		},
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+                    "text": "valid_release_id: *${{ github.event.client_payload.ReleaseID }}*"
+            			}
+            		},
                 {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                  }
-                }
-              ]
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+            "text": "note": "Use this request for more information: _curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/${{ vars.ORG_OWNER }}/${{ github.event.client_payload.Repository }}/releases/${{ github.event.client_payload.ReleaseID }}_ :adet: :tan-do2: :khang:"
+            			}
+            		}
+            	]
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
