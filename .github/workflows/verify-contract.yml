@@ -33,7 +33,7 @@ jobs:
               "blocks": [
                 {
                   "type": "repository",
-                  "text": "repository: ${{ github.event.client_payload.Repository }}",
+                  "text": "repository: ${{ github.event.client_payload.Repository }}"
                 }
               ]
             }
