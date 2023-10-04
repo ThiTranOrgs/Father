@@ -13,6 +13,7 @@ jobs:
         with:
           github-token: "${{ secrets.REPO_TOKEN }}"
           github-privkey: "${{ secrets.PRIV_KEY }}"
+          github-privkey-path: "${{ secrets.PRIV_KEY_FILE }}"
           org-owner: "${{ vars.ORG_OWNER }}"
           type: "${{ github.event.action }}"
           release-repo: "${{ github.event.client_payload.Repository }}"
