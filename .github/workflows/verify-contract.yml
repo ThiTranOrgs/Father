@@ -25,7 +25,7 @@ jobs:
       - name: Notify valid repository
         id: slack-pass
         uses: slackapi/slack-github-action@v1.24.0
-        if: ${{ steps.verify.outcome == 'success' }}; then
+        if: steps.verify.outcome == 'success'
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           payload: |
@@ -65,7 +65,7 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
       - name: Notify invalid repository
-        if: ${{ steps.verify.outcome != 'success' }}
+        if: steps.verify.outcome != 'success'
         id: slack-fail
         uses: slackapi/slack-github-action@v1.24.0
         with:
